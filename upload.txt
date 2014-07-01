@@ -1,0 +1,26 @@
+	/**
+	*Helper for ajax product image upload
+	*/
+	public function upload_img($type)
+	{
+		if(!is_dir('app_images'))mkdir(('./app_images/'));		
+		if (!empty($_FILES)) 
+		{	     
+		    $tempFile = $_FILES['file']['tmp_name'];        
+
+      		$file_info = explode('.',$_FILES['file']['name']);
+      		$file_ext = $file_info[1];
+
+		    $targetPath = './app_images/';  
+
+		    $newFile = time().'.'.$file_ext;
+		     
+		    $targetFile =  $targetPath.$newFile; 
+		 
+		    move_uploaded_file($tempFile,$targetFile); 	
+
+		    //sos uses the office model
+		    if($type == 'sos')$type = "office";
+		    $this->$type->update($this->$type->get_last_entry('id'),['image_url'=>$newFile]);
+		}
+	}
